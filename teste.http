@@ -1,0 +1,36 @@
+POST http://localhost:5113/api/disco HTTP/1.1
+Content-Type: application/json
+
+{
+    "Titulo" : "Tina Live",
+    "Artista" : "Tina Turner",
+    "AnoLancamento" : "1987",
+    "Genero" : "Rock",
+    "Gravadora" : "EMI",
+    "DuracaoTotal" : 0,
+    "Formato" : "LP",
+    "Capa" : "",
+    "DataAquisicao": "2024-10-27",
+    "AvaliacaoPessoal" : 5,
+    "Comentario" : "Disco Excelente",
+    "Faixas": []
+}
+
+#####
+
+GET http://localhost:5113/api/disco
+#####
+
+GET http://localhost:5113/api/disco/2
+
+####
+
+GET http://localhost:5113/api/disco/genero/Jazz
+
+#####
+
+GET http://localhost:5113/api/disco/artista/Tina Turner
+
+####
+GET http://localhost:5113/api/faixa/disco/1
+
