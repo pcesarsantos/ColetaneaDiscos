@@ -49,12 +49,12 @@ namespace ColetaneaDiscos.Repositories
         {
             using (IDbConnection db = new MySqlConnection(_connectionString))
             {
-                var sql = "SELECT * FROM Discos WHERE ID = @Id";
-                var faixaSql = "SELECT * FROM Faixas Where idDisco = @Id";
-                var disco = await db.QueryFirstOrDefaultAsync<Disco>(sql, new {Id = id});
+                var sql = "SELECT * FROM Discos WHERE ID = @id";
+                var faixaSql = "SELECT * FROM Faixas Where idDisco = @id";
+                var disco = await db.QueryFirstOrDefaultAsync<Disco>(sql, new {id});
                 if (disco != null)
                 {
-                    disco.Faixas = (await db.QueryAsync<Faixa>(faixaSql, new {Id = id})).AsList();
+                    disco.Faixas = (await db.QueryAsync<Faixa>(faixaSql, new {id})).AsList();
                 }
 
                 return disco;
@@ -66,7 +66,7 @@ namespace ColetaneaDiscos.Repositories
             using (IDbConnection db = new MySqlConnection(_connectionString))
             {
                 var sql = "INSERT INTO Discos (Titulo, Artista, AnoLancamento, Genero, Gravadora, DuracaoTotal, Formato, Capa, DataAquisicao, AvaliacaoPessoal, Comentario) VALUES (@Titulo, @Artista, @AnoLancamento, @Genero, @Gravadora, @DuracaoTotal, @Formato, @Capa, @DataAquisicao, @AvaliacaoPessoal, @Comentario)";
-                return await db.ExecuteAsync(sql, new { disco.Titulo, disco.Artista, disco.AnoLancamento, disco.Genero, disco.Gravadora, disco.DuracaoTotal, disco.Formato, disco.Capa, disco.DataAquisicao, disco.AvaliacaoPessoal, disco.Comentario });
+                return await db.ExecuteAsync(sql, new DynamicParameters(disco));
             }
         }
 
@@ -75,7 +75,7 @@ namespace ColetaneaDiscos.Repositories
             using (IDbConnection db = new MySqlConnection(_connectionString))
             {
                 var sql = "UPDATE Discos SET Titulo = @Titulo, Artista = @Artista, AnoLancamento = @AnoLancamento, Genero = @Genero, Gravadora = @Gravadora, DuracaoTotal = @DuracaoTotal, Formato = @Formato, Capa = @Capa, DataAquisicao = @DataAquisicao, AvaliacaoPessoal = @AvaliacaoPessoal, Comentario = @Comentario WHERE Id = @Id";
-                return await db.ExecuteAsync(sql, new {disco.Titulo, disco.Artista, disco.AnoLancamento, disco.Genero, disco.Gravadora, disco.DuracaoTotal, disco.Formato, disco.Capa, disco.DataAquisicao, disco.AvaliacaoPessoal, disco.Comentario, disco.Id });
+                return await db.ExecuteAsync(sql, new DynamicParameters(disco));
             }
         }
 
@@ -83,8 +83,8 @@ namespace ColetaneaDiscos.Repositories
         {
             using (IDbConnection db = new MySqlConnection(_connectionString))
             {
-                var sql = "DELETE FROM Discos WHERE Id = @Id";
-                return await db.ExecuteAsync(sql, new {Id = id});
+                var sql = "DELETE FROM Discos WHERE Id = @id";
+                return await db.ExecuteAsync(sql, new {id});
             }
         }
 

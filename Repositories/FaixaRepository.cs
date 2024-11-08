@@ -23,7 +23,7 @@ namespace ColetaneaDiscos.Repositories
             using (IDbConnection db = new MySqlConnection(_connectionString))
             {
                 var sql = "SELECT * FROM Faixas Where IdDisco = @IdDisco";
-                return await db.QueryAsync<Faixa>(sql, new { IdDisco = IdDisco });
+                return await db.QueryAsync<Faixa>(sql, new { IdDisco });
             }
         }
 
@@ -32,7 +32,7 @@ namespace ColetaneaDiscos.Repositories
             using (IDbConnection db = new MySqlConnection(_connectionString))
             {
                 var sql = "INSERT INTO Faixas (NomeDaFaixa, TempoDeDuracao, IdDisco) VALUES (@NomeDaFaixa, @TempoDeDuracao, @IdDisco)";
-                return await db.ExecuteAsync(sql, new { faixa.NomeDaFaixa, faixa.TempoDeDuracao, faixa.IdDisco });
+                return await db.ExecuteAsync(sql, new DynamicParameters(faixa));
             }
         }
 
@@ -41,7 +41,7 @@ namespace ColetaneaDiscos.Repositories
             using (IDbConnection db = new MySqlConnection(_connectionString))
             {
                 var sql = "UPDATE Faixas SET NomeDaFaixa = @NomeDaFaixa, TempoDeDuracao = @TempoDeDuracao, IdDisco = @IdDisco WHERE Id = @Id";
-                return await db.ExecuteAsync(sql, new {faixa.NomeDaFaixa, faixa.TempoDeDuracao, faixa.IdDisco, faixa.Id });
+                return await db.ExecuteAsync(sql, new DynamicParameters(faixa));
             }
         }
 
@@ -49,8 +49,8 @@ namespace ColetaneaDiscos.Repositories
         {
             using (IDbConnection db = new MySqlConnection(_connectionString))
             {
-                var sql = "DELETE FROM Faixas WHER Id = @Id";
-                return await db.ExecuteAsync(sql, new {Id = id});
+                var sql = "DELETE FROM Faixas WHER Id = @id";
+                return await db.ExecuteAsync(sql, new {id});
             }
         }
 
