@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using ColetaneaDiscos.Models;
 using ColetaneaDiscos.Repositories;
 using System.ComponentModel;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ColetaneaDiscos.Controllers
 {
@@ -49,6 +50,7 @@ namespace ColetaneaDiscos.Controllers
        }
 
        [HttpPost]
+       [Authorize]
         public async Task<ActionResult<int>> Add(Disco disco)
         {
             var result = await _discoRepository.Add(disco);
@@ -56,6 +58,7 @@ namespace ColetaneaDiscos.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize]
         public async Task<ActionResult<int>> Update(Disco disco)
         {
             var result = await _discoRepository.Update(disco);
@@ -65,6 +68,7 @@ namespace ColetaneaDiscos.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize]
         public async Task<ActionResult<int>> Delete(int id)
         {
             var result = await _discoRepository.Delete(id);

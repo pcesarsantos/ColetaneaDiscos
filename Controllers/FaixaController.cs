@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using ColetaneaDiscos.Models;
 using ColetaneaDiscos.Repositories;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ColetaneaDiscos.Controllers
 {
@@ -25,6 +26,7 @@ namespace ColetaneaDiscos.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<ActionResult<int>> Add(Faixa faixa)
         {
             var result = await _faixaRepository.Add(faixa);
@@ -32,6 +34,7 @@ namespace ColetaneaDiscos.Controllers
         }
 
         [HttpPut]
+        [Authorize]
         public async Task<ActionResult<int>> Update(Faixa faixa)
         {
             var result = await _faixaRepository.Update(faixa);
@@ -41,6 +44,7 @@ namespace ColetaneaDiscos.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize]
         public async Task<ActionResult<int>> Delete(int id)
         {
             var result = await _faixaRepository.Delete(id);

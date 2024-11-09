@@ -1,5 +1,9 @@
 using ColetaneaDiscos.Repositories;
+using ColetaneaDiscos.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Hosting;
+using System.Text;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,6 +16,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddControllers();
 builder.Services.AddScoped<IDiscoRepository, DiscoRepository>();
 builder.Services.AddScoped<IFaixaRepository, FaixaRepository>();
+builder.Services.AddScoped<TokenService>();
 builder.Services.AddCors(options =>
         {
             options.AddPolicy("AllowAllOrigins", builder =>
@@ -21,8 +26,30 @@ builder.Services.AddCors(options =>
                        .AllowAnyHeader(); // Permite qualquer cabeçalho
             });
         });
+builder.Services.AddAuthentication(options => 
+    {
+       options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+       options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme; 
+    })
+    .AddJwtBearer(options => 
+    {
+        var jwtSettings = builder.Configuration.GetSection("JwtSettings");
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = jwtSettings["Issuer"],
+            ValidAudience = jwtSettings["Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings["Secret"]))
+        };
+    });
 
 var app = builder.Build();
+
+app.UseAuthentication();
+app.UseAuthorization();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
