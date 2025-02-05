@@ -49,15 +49,28 @@ namespace ColetaneaDiscos.Repositories
         {
             using (IDbConnection db = new MySqlConnection(_connectionString))
             {
-                var sql = "SELECT * FROM Discos WHERE ID = @id";
-                var faixaSql = "SELECT * FROM Faixas Where idDisco = @id";
-                var disco = await db.QueryFirstOrDefaultAsync<Disco>(sql, new {id});
-                if (disco != null)
-                {
-                    disco.Faixas = (await db.QueryAsync<Faixa>(faixaSql, new {id})).AsList();
-                }
+                var orderDictionary = new Dictionary<int, Disco>();
 
-                return disco;
+                var sql = "SELECT * FROM Discos d INNER JOIN Faixas f on f.idDisco = d.id WHERE d.ID= @id";
+
+                var discos = db.Query<Disco, Faixa, Disco>(sql, (disco, faixa) => 
+                    {
+                        Disco discoRetornado;
+
+                        if (!orderDictionary.TryGetValue(disco.Id, out discoRetornado))
+                        {
+                            discoRetornado = disco;
+                            discoRetornado.Faixas = new List<Faixa>();
+                            orderDictionary.Add(discoRetornado.Id, discoRetornado);
+                        }
+
+                        discoRetornado.Faixas.Add(faixa);
+                        return discoRetornado;
+                    }, 
+                    param: new {id = id},
+                    splitOn: "Id").Distinct().ToList();
+                
+                return discos.FirstOrDefault();
             }
         }
 
